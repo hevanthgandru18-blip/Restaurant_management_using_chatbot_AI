@@ -5,9 +5,19 @@ import os
 
 load_dotenv()
 
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017/")
+MONGO_URL = os.getenv(
+    "MONGO_URL",
+    "mongodb://localhost:27017/"
+)
 
-client = MongoClient(MONGO_URL)
+client = MongoClient(MONGO_URL, serverSelectionTimeoutMS=5000)
+
+try:
+    client.admin.command("ping")
+    print("MongoDB connected successfully!")
+
+except Exception as e:
+    print("MongoDB connection failed:", e)
 
 db = client["restaurant_management"]
 
@@ -21,5 +31,3 @@ orders_collection = db["orders"]
 payments_collection = db["payments"]
 feedback_collection = db["feedback"]
 chatbot_collection = db["chatbotMessages"]
-
-print("MongoDB database connected successfully!")
